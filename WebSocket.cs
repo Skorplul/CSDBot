@@ -19,7 +19,7 @@ namespace JohnMaynard
 
             //  You can assign your bot token to a string, and pass that in to connect.
             //  This is, however, insecure, particularly if you plan to have your code hosted in a public repository.
-            var token = "MTI1NjQ4NTExMTI2ODkwNTAwMw.GgV3HI.-2CAdBW9TEjmJ_XzQL2rxWBe76z6M9NUXBlgfI";
+            var token = "ups";
 
             // Some alternative options would be to keep your token in an Environment Variable or a standalone file.
             // var token = Environment.GetEnvironmentVariable("NameOfYourEnvironmentVariable");
