@@ -10,11 +10,12 @@ namespace JohnMaynard
 {
     public class WebSocket
     {
-        public static DiscordSocketClient _client;
+        public static DiscordSocketClient? _client;
 
-        public List<string> Commands = new List<string>
+        public List<string> Commands = new()
         {
             "test",
+            "stop",
             "reload"
         };
 
@@ -53,11 +54,13 @@ namespace JohnMaynard
 
         public static async Task SlashCommandHandler(SocketSlashCommand command)
         {
+            var Log = new API.Log();
             string commandName = command.Data.Name;
 
             if (commandName == "test")
             {
-                Console.WriteLine(command.CommandName);
+                Log.Debug($"Command \"{command.Data.Name}\" has been executed by {command.User.GlobalName}!");
+                //Console.WriteLine(command.CommandName);
                 await command.RespondAsync($"You executed {command.Data.Name}");
             }
 
@@ -65,8 +68,8 @@ namespace JohnMaynard
             {
                 if (command.User.Id == 504875989776596992)
                 {
-                    Console.WriteLine(command.CommandName);
-                    await command.RespondAsync($"You executed stopped the bot!");
+                    Log.Debug($"Command {command.Data.Name} has been executed by {command.User.GlobalName}!");
+                    await command.RespondAsync($"You stopped the bot!");
                     await _client.StopAsync();
                     await _client.LogoutAsync();
                 }
@@ -90,7 +93,7 @@ namespace JohnMaynard
                     // Using the ready event is a simple implementation for the sake of the example. Suitable for testing and development.
                     // For a production bot, it is recommended to only run the CreateGlobalApplicationCommandAsync() once for each command.
                 }
-                catch (ApplicationCommandException exception)
+                catch (HttpException exception)
                 {
                     // If our command was invalid, we should catch an ApplicationCommandException. This exception contains the path of the error as well as the error message. You can serialize the Error field in the exception to get a visual of where your error is.
                     var json = JsonConvert.SerializeObject(exception.Errors, Formatting.Indented);
