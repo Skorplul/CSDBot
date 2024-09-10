@@ -7,7 +7,7 @@ namespace JohnMaynard.API
     public static class Log
     {
 	/// <summary>
-        /// Sends a Debug level messages to the Bot console.
+        /// Sends an Info level messages to the Bot console.
         /// </summary>
         /// <param name="message">The message to be sent.</param>
         public static void Info(string message)
