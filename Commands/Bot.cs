@@ -1,8 +1,8 @@
 ﻿using Discord.WebSocket;
 
-namespace JohnMaynard
+namespace CSDBot
 {
-    public class Bot
+    internal class Bot
     {
         public async Task SlashCommandHandler(SocketSlashCommand command)
         {

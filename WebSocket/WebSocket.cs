@@ -6,7 +6,7 @@ using DotNetEnv;
 using System;
 using System.Threading.Tasks;
 
-namespace JohnMaynard
+namespace CSDBot
 {
     public class WebSocket
     {
@@ -59,7 +59,7 @@ namespace JohnMaynard
 
             if (commandName == "test")
             {
-                Log.Debug($"Command \"{command.Data.Name}\" has been executed by {command.User.GlobalName}!");
+                API.Log.Debug($"Command \"{command.Data.Name}\" has been executed by {command.User.GlobalName}!");
                 //Console.WriteLine(command.CommandName);
                 await command.RespondAsync($"You executed {command.Data.Name}");
             }

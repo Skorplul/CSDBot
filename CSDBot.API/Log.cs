@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 
-namespace JohnMaynard.API
+namespace CSDBot.API
 {
     public static class Log
     {
@@ -21,7 +21,8 @@ namespace JohnMaynard.API
         /// <param name="message">The message to be sent.</param>
         public static void Debug(string message)
         {
-            Console.WriteLine($"[{DateTime.Now.ToString()}] [DEBUG]  {message}", Console.ForegroundColor = ConsoleColor.Cyan);
+            if (CSDBot.Config)
+                Console.WriteLine($"[{DateTime.Now.ToString()}] [DEBUG]  {message}", Console.ForegroundColor = ConsoleColor.Cyan);
         }
 
         /// <summary>
