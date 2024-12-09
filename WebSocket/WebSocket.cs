@@ -3,16 +3,19 @@ using Discord.Net;
 using Discord.WebSocket;
 using Newtonsoft.Json;
 using DotNetEnv;
+using Log = CSDBot.API.Log;
 using System;
 using System.Threading.Tasks;
 
 namespace CSDBot
 {
-    public class WebSocket
+    public static class WebSocket
     {
+        
+
         public static DiscordSocketClient? _client;
 
-        public List<string> Commands = new()
+        public static List<string> Commands = new()
         {
             "test",
             "stop",
@@ -35,7 +38,7 @@ namespace CSDBot
 
             _client = new DiscordSocketClient();
 
-            _client.Log += Log;
+            _client.Log += Loging;
             _client.SlashCommandExecuted += SlashCommandHandler;
 
             // Use the loaded token to login
@@ -46,7 +49,7 @@ namespace CSDBot
             await Task.Delay(-1);
         }
 
-        private static Task Log(LogMessage msg)
+        private static Task Loging(LogMessage msg)
         {
             Console.WriteLine(msg.ToString());
             return Task.CompletedTask;
@@ -54,12 +57,11 @@ namespace CSDBot
 
         public static async Task SlashCommandHandler(SocketSlashCommand command)
         {
-            var Log = new API.Log();
             string commandName = command.Data.Name;
 
             if (commandName == "test")
             {
-                API.Log.Debug($"Command \"{command.Data.Name}\" has been executed by {command.User.GlobalName}!");
+                Log.Debug($"Command \"{command.Data.Name}\" has been executed by {command.User.GlobalName}!");
                 //Console.WriteLine(command.CommandName);
                 await command.RespondAsync($"You executed {command.Data.Name}");
             }
@@ -83,8 +85,8 @@ namespace CSDBot
             {
                 // Let's do our global command
                 var globalCommand = new SlashCommandBuilder();
-                globalCommand.WithName("8-ball");
-                globalCommand.WithDescription("Answer all your questions!");
+                globalCommand.WithName("stop");
+                globalCommand.WithDescription("Stop da bot!");
 
                 try
                 {

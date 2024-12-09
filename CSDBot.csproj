@@ -10,4 +10,7 @@
     <PackageReference Include="DotNetEnv" Version="3.0.0" />
     <PackageReference Include="YamlDotNet" Version="16.2.1" />
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Commands\InConsole\" />
+  </ItemGroup>
 </Project>
