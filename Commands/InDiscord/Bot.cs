@@ -1,5 +1,4 @@
 ﻿using Discord.WebSocket;
-using CSDBot.API;
 
 namespace CSDBot
 {
@@ -7,7 +6,7 @@ namespace CSDBot
     {
         public async Task SlashCommandHandler(SocketSlashCommand command)
         {
-            Log.Info($"@{command.User.GlobalName} executed {command.CommandName}");
+            Console.WriteLine(command.CommandName);
             await command.RespondAsync($"You executed {command.Data.Name}");
         }
     }

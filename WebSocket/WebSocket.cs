@@ -4,15 +4,14 @@ using Discord.WebSocket;
 using Newtonsoft.Json;
 using DotNetEnv;
 using Log = CSDBot.API.Log;
-using System;
-using System.Threading.Tasks;
+using YamlDotNet.Serialization;
+using System.IO;
+using System.Reflection;
 
 namespace CSDBot
 {
     public static class WebSocket
     {
-        
-
         public static DiscordSocketClient? _client;
 
         public static List<string> Commands = new()
@@ -26,15 +25,36 @@ namespace CSDBot
         {
             try
             {
-                Env.Load("C:\\Users\\skorp\\Documents\\Discord\\CSBot\\CSDBot\\.env");
-                Console.WriteLine(".env file loaded successfully.");
+
+                if (!File.Exists("config.yaml"))
+                {
+                    // Hole alle statischen Eigenschaften der Klasse Config
+                    var staticProperties = typeof(Config).GetProperties(BindingFlags.Static | BindingFlags.Public);
+                    var configDictionary = new Dictionary<string, object>();
+
+                    foreach (var prop in staticProperties)
+                    {
+                        configDictionary[prop.Name] = prop.GetValue(null);
+                    }
+
+                    // Serialisiere das Dictionary in YAML
+                    var serializer = new SerializerBuilder().Build();
+                    string yamlContent = serializer.Serialize(configDictionary);
+
+                    // YAML-Content in die Datei schreiben
+                    string filePath = "config.yaml";
+                    File.WriteAllText(filePath, yamlContent);
+
+                    Log.Debug($"Konfigurationsdatei wurde erstellt: {Path.GetFullPath(filePath)}");
+                }
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error loading .env file: {ex.Message}");
+                Log.Error($"Error loading Configs: \n{ex.Message}");
             }
 
-            string bottoken = Env.GetString("BOTTOKEN");
+            string bottoken = Config.BotToken;
+            Log.Debug("Token Loaded...");
 
             _client = new DiscordSocketClient();
 
@@ -79,6 +99,7 @@ namespace CSDBot
                 {
                     await command.RespondAsync("No Permission");
                 }
+                return;
             }
 
             if (commandName == "reload")
