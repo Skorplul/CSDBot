@@ -11,9 +11,9 @@ public sealed class Config
 
     [Description("If debugging messages should be shown.")]
         public bool IsDebug { get; set; } = false;
+
     [Description("The token for the bot used.")]
         public string BotToken { get; } = "";
-
 
     // Private constructor to prevent direct instantiation
     private Config() { }

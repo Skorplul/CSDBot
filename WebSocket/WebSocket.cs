@@ -8,6 +8,7 @@ using YamlDotNet.Serialization;
 using System.IO;
 using System.Reflection;
 using YamlDotNet.Serialization.NamingConventions;
+using Discord.Commands;
 
 namespace CSDBot
 {
@@ -15,51 +16,8 @@ namespace CSDBot
     {
         public static DiscordSocketClient? _client;
 
-        public static List<string> Commands = new()
-        {
-            "test",
-            "stop",
-            "reload"
-        };
-
         public static async Task Main()
         {
-            try
-            {
-                if (!File.Exists("config.yaml"))
-                {
-                    // Hole alle statischen Eigenschaften der Klasse Config
-                    var staticProperties = typeof(Config).GetProperties(BindingFlags.Static | BindingFlags.Public);
-                    var configDictionary = new Dictionary<string, object>();
-
-                    foreach (var prop in staticProperties)
-                    {
-                        configDictionary[prop.Name] = prop.GetValue(null);
-                    }
-
-                    // Serialisiere das Dictionary in YAML
-                    var serializer = new SerializerBuilder().Build();
-                    string yamlContent = serializer.Serialize(configDictionary);
-
-                    // YAML-Content in die Datei schreiben
-                    string filePath = "config.yaml";
-                    File.WriteAllText(filePath, yamlContent);
-
-                    Log.Debug($"Konfigurationsdatei wurde erstellt: {Path.GetFullPath(filePath)}");
-                }
-                else
-                {
-                    var yaml = File.ReadAllText("config.yaml");
-
-                    var deserializer = new DeserializerBuilder().WithNamingConvention(CamelCaseNamingConvention.Instance).Build(); // ✅ Build() returns a Deserializer object
-                    var config = deserializer.Deserialize<Config>(yaml); // ✅ Now it works
-                }
-            }
-            catch (Exception ex)
-            {
-                Log.Error($"Error loading Configs: \n{ex.Message}");
-            }
-
             string bottoken = Config.Instance.BotToken;
             Log.Debug("Token Loaded...");
 
