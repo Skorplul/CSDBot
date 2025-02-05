@@ -2,12 +2,7 @@
 using Discord.Net;
 using Discord.WebSocket;
 using Newtonsoft.Json;
-using DotNetEnv;
 using Log = CSDBot.API.Log;
-using YamlDotNet.Serialization;
-using System.IO;
-using System.Reflection;
-using YamlDotNet.Serialization.NamingConventions;
 using Discord.Commands;
 
 namespace CSDBot
