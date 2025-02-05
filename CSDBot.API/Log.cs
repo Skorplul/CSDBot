@@ -1,6 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Reflection;
+using Discord;
 
 namespace CSDBot.API
 {
@@ -21,7 +19,7 @@ namespace CSDBot.API
         /// <param name="message">The message to be sent.</param>
         public static void Debug(string message)
         {
-            if (Config.IsDebug)
+            if (Config.Instance.IsDebug)
                 Console.WriteLine($"[{DateTime.Now.ToString()}] [DEBUG]  {message}", Console.ForegroundColor = ConsoleColor.Cyan);
         }
 
@@ -41,6 +39,17 @@ namespace CSDBot.API
         public static void Error(string message)
         {
             Console.WriteLine($"[{DateTime.Now.ToString()}] [ERROR]  {message}", Console.ForegroundColor = ConsoleColor.Red);
+        }
+
+        /// <summary>
+        /// Task for Startup. Don't use anywere else!
+        /// </summary>
+        /// <param name="msg"></param>
+        /// <returns></returns>
+        public static Task Loging(LogMessage msg)
+        {
+            Info(msg.ToString());
+            return Task.CompletedTask;
         }
     }
 }

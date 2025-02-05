@@ -7,6 +7,7 @@ using Log = CSDBot.API.Log;
 using YamlDotNet.Serialization;
 using System.IO;
 using System.Reflection;
+using YamlDotNet.Serialization.NamingConventions;
 
 namespace CSDBot
 {
@@ -25,7 +26,6 @@ namespace CSDBot
         {
             try
             {
-
                 if (!File.Exists("config.yaml"))
                 {
                     // Hole alle statischen Eigenschaften der Klasse Config
@@ -47,18 +47,25 @@ namespace CSDBot
 
                     Log.Debug($"Konfigurationsdatei wurde erstellt: {Path.GetFullPath(filePath)}");
                 }
+                else
+                {
+                    var yaml = File.ReadAllText("config.yaml");
+
+                    var deserializer = new DeserializerBuilder().WithNamingConvention(CamelCaseNamingConvention.Instance).Build(); // ✅ Build() returns a Deserializer object
+                    var config = deserializer.Deserialize<Config>(yaml); // ✅ Now it works
+                }
             }
             catch (Exception ex)
             {
                 Log.Error($"Error loading Configs: \n{ex.Message}");
             }
 
-            string bottoken = Config.BotToken;
+            string bottoken = Config.Instance.BotToken;
             Log.Debug("Token Loaded...");
 
             _client = new DiscordSocketClient();
 
-            _client.Log += Loging;
+            _client.Log += Log.Loging;
             _client.SlashCommandExecuted += SlashCommandHandler;
 
             // Use the loaded token to login
@@ -67,12 +74,6 @@ namespace CSDBot
 
             // Block this task until the program is closed.
             await Task.Delay(-1);
-        }
-
-        private static Task Loging(LogMessage msg)
-        {
-            Console.WriteLine(msg.ToString());
-            return Task.CompletedTask;
         }
 
         public static async Task SlashCommandHandler(SocketSlashCommand command)
@@ -122,7 +123,7 @@ namespace CSDBot
                     var json = JsonConvert.SerializeObject(exception.Errors, Formatting.Indented);
 
                     // You can send this error somewhere or just print it to the console, for this example we're just going to print it.
-                    Console.WriteLine(json);
+                    Log.Error(json);
                 }
             }
         }
