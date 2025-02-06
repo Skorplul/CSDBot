@@ -42,6 +42,17 @@ namespace CSDBot.API
         }
 
         /// <summary>
+        /// Throws a Fatal error level.
+        /// </summary>
+        /// <param name="message">The message to be sent.</param>
+        /// <param name="err">The error description.</param>
+        public static void Fatal(string message, string err)
+        {
+            Console.WriteLine($"[{DateTime.Now.ToString()}] [FATAL]  {message}", Console.ForegroundColor = ConsoleColor.Red);
+            throw new Exception(err);
+        }
+
+        /// <summary>
         /// Task for Startup. Don't use anywere else!
         /// </summary>
         /// <param name="msg"></param>

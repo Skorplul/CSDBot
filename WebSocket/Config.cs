@@ -2,6 +2,7 @@ using System;
 using System.ComponentModel;
 using System.IO;
 using CSDBot.API;
+using Discord.Interactions;
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
 
@@ -9,7 +10,7 @@ public sealed class Config
 {
     private static Config? _instance;
     private static readonly object _lock = new object();
-    private static readonly string ConfigPath = Path.Combine(AppContext.BaseDirectory, "config.yaml");
+    private static readonly string ConfigPath = Path.Combine(Directory.GetCurrentDirectory(), "config.yaml");
 
 
     [Description("If debugging messages should be shown.")]
@@ -18,7 +19,6 @@ public sealed class Config
     [Description("The token for the bot used.")]
     public string BotToken { get; set; } = "";
 
-    // Private constructor to prevent direct instantiation
     public Config() 
     { 
 
