@@ -1,8 +1,5 @@
-using System;
 using System.ComponentModel;
-using System.IO;
 using CSDBot.API;
-using Discord.Interactions;
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
 
