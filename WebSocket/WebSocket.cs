@@ -11,6 +11,7 @@ namespace CSDBot
     {
         public static DiscordSocketClient? _client;
 
+
         public static async Task Main()
         {
             string bottoken = Config.Instance.BotToken;

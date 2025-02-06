@@ -9,6 +9,7 @@ public sealed class Config
 {
     private static Config? _instance;
     private static readonly object _lock = new object();
+    private static readonly string ConfigPath = Path.Combine(AppContext.BaseDirectory, "config.yaml");
 
 
     [Description("If debugging messages should be shown.")]
@@ -18,7 +19,10 @@ public sealed class Config
     public string BotToken { get; set; } = "";
 
     // Private constructor to prevent direct instantiation
-    private Config() { }
+    public Config() 
+    { 
+
+    }
 
     public static Config Instance
     {
@@ -30,7 +34,7 @@ public sealed class Config
                 {
                     if (_instance == null)
                     {
-                        _instance = LoadConfig("config.yaml"); // Load YAML when first accessed
+                        _instance = LoadConfig(ConfigPath); // Load YAML when first accessed
                     }
                 }
             }
@@ -58,7 +62,7 @@ public sealed class Config
 
         try{
             var yaml = File.ReadAllText(filePath, new System.Text.UTF8Encoding(false));
-            var deserializer = new DeserializerBuilder().WithNamingConvention(CamelCaseNamingConvention.Instance).IgnoreUnmatchedProperties().Build();
+            var deserializer = new DeserializerBuilder().WithNamingConvention(CamelCaseNamingConvention.Instance).Build();
 
             Log.Warn($"after : {yaml}");
 
