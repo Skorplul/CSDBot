@@ -27,6 +27,7 @@ namespace CSDBot
                     await command.RespondAsync($"You stopped the bot!");
                     await WebSocket._client.StopAsync();
                     await WebSocket._client.LogoutAsync();
+                    Environment.Exit(0);
                 }
                 else
                 {
