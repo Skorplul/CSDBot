@@ -55,39 +55,34 @@ public sealed class Config
 
     private static Config LoadConfig(string filePath)
     {
-        if (!File.Exists(filePath))
-        {
-            Log.Warn($"Config file not found: {filePath}, creating new one!");
-
-            var firstConf = new Config();
-
-            // Serialisiere in YAML
-            var serializer = new SerializerBuilder().WithNamingConvention(CamelCaseNamingConvention.Instance).Build();
-            string yamlContent = serializer.Serialize(firstConf);
-            
-            // YAML-Content in die Datei schreiben
-            Log.Debug($"write before : {yamlContent}");
-            File.WriteAllText(filePath, yamlContent, new System.Text.UTF8Encoding(false));
-            Log.Debug($"Konfigurationsdatei wurde erstellt: {Path.GetFullPath(filePath)}");
-        }
-
         try{
+            if (!File.Exists(filePath))
+            {
+                Log.Warn($"Config file not found: {filePath}, creating new one!");
+
+                var firstConf = new Config();
+
+                // Serialisiere in YAML
+                var serializer = new SerializerBuilder().WithNamingConvention(CamelCaseNamingConvention.Instance).Build();
+                string yamlContent = serializer.Serialize(firstConf);
+                
+                // YAML-Content in die Datei schreiben
+                Log.Debug($"write before : {yamlContent}");
+                File.WriteAllText(filePath, yamlContent, new System.Text.UTF8Encoding(false));
+                Log.Debug($"Konfigurationsdatei wurde erstellt: {Path.GetFullPath(filePath)}");
+            }
+
+        
             var yaml = File.ReadAllText(filePath, new System.Text.UTF8Encoding(false));
             var deserializer = new DeserializerBuilder().WithNamingConvention(CamelCaseNamingConvention.Instance).Build();
 
             Log.Debug($"after read : {yaml}");
 
-            var firstConf = new Config();
-
-            // Serialisiere in YAML
-            var serializer = new SerializerBuilder().WithNamingConvention(CamelCaseNamingConvention.Instance).Build();
-            string yamlContent = serializer.Serialize(firstConf);
-
             return deserializer.Deserialize<Config>(yaml);
         }
         catch(Exception ex)
         {
-            throw new Exception("Deserialisation error:", ex);
+            throw new Exception("ERROR:", ex);
         }
     }
 }
