@@ -82,6 +82,7 @@ public sealed class Config
         }
         catch(Exception ex)
         {
+            // I know this try catch is useless lol
             throw new Exception("ERROR:", ex);
         }
     }
