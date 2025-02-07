@@ -1,4 +1,5 @@
-﻿using Discord;
+﻿using CSDBot.Commands.InConsole;
+using Discord;
 using Discord.WebSocket;
 using Log = CSDBot.API.Log;
 
@@ -18,14 +19,11 @@ namespace CSDBot
             _client.Log += Log.Loging;
             _client.SlashCommandExecuted += Bot.SlashCommandHandler;
 
-            // Login and start the Discord bot
             await _client.LoginAsync(TokenType.Bot, bottoken);
             await _client.StartAsync();
 
-            // Start a background task to process console input
-            Task.Run(() => HandleConsoleInput());
+            await Task.Run(() => HandleConsoleInput());
 
-            // Block this task until the program is closed.
             await Task.Delay(-1);
         }
 
@@ -34,29 +32,23 @@ namespace CSDBot
         {
             while (true)
             {
-                // This call blocks until input is entered.
                 string? input = Console.ReadLine();
 
                 if (!string.IsNullOrEmpty(input))
                 {
-                    // Process the command
                     if (input.Equals("exit", StringComparison.OrdinalIgnoreCase))
                     {
-                        Log.Debug("Shutting down...");
-
-                        // Shut down the Discord client gracefully.
-                        _client?.LogoutAsync().GetAwaiter().GetResult();
-                        _client?.StopAsync().GetAwaiter().GetResult();
-
-                        // Exit the application.
-                        Environment.Exit(0);
+                        Exit.Execute();
                     }
-                    else
-                    {
-                        // Handle other commands as needed
-                        Log.Debug($"Received command: {input}");
-                        // You can add more command handling logic here.
-                    }
+                    
+                    // else if (input.Equals("", StringComparison.OrdinalIgnoreCase))
+                    // {
+                    //    
+                    // }
+                    // else
+                    // {
+                    //      Log.Debug($"Command {input} has been registered.")
+                    // }
                 }
             }
         }
