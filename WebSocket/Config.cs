@@ -16,6 +16,20 @@ public sealed class Config
     [Description("The token for the bot used.")]
     public string BotToken { get; set; } = "";
 
+    [Description("List of answers for 8-ball.")]
+    public List<string> BallAnswr = new List<string>()
+    {
+        "Von mir aus, kannst du das tun.",
+        "Nein.",
+        "Warum sollte man das tun wollen.",
+        "Tja, dafür bring ich dich um.",
+        "Joa mach halt.",
+        "Wenns sein muss...",
+        "Gute Idee!",
+        "Mach das.",
+        "Gerne."
+    };
+
     public Config() 
     { 
 
@@ -52,7 +66,7 @@ public sealed class Config
             string yamlContent = serializer.Serialize(firstConf);
             
             // YAML-Content in die Datei schreiben
-            Log.Warn($"before : {yamlContent}");
+            Log.Debug($"write before : {yamlContent}");
             File.WriteAllText(filePath, yamlContent, new System.Text.UTF8Encoding(false));
             Log.Debug($"Konfigurationsdatei wurde erstellt: {Path.GetFullPath(filePath)}");
         }
@@ -61,7 +75,13 @@ public sealed class Config
             var yaml = File.ReadAllText(filePath, new System.Text.UTF8Encoding(false));
             var deserializer = new DeserializerBuilder().WithNamingConvention(CamelCaseNamingConvention.Instance).Build();
 
-            Log.Warn($"after : {yaml}");
+            Log.Debug($"after read : {yaml}");
+
+            var firstConf = new Config();
+
+            // Serialisiere in YAML
+            var serializer = new SerializerBuilder().WithNamingConvention(CamelCaseNamingConvention.Instance).Build();
+            string yamlContent = serializer.Serialize(firstConf);
 
             return deserializer.Deserialize<Config>(yaml);
         }

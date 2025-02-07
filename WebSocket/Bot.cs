@@ -1,4 +1,5 @@
-﻿using Discord;
+﻿using CSDBot.Commands;
+using Discord;
 using Discord.Net;
 using Discord.WebSocket;
 using Newtonsoft.Json;
@@ -14,9 +15,12 @@ namespace CSDBot
 
             if (commandName == "test")
             {
-                Log.Debug($"Command \"{command.Data.Name}\" has been executed by {command.User.GlobalName}!");
-                //Console.WriteLine(command.CommandName);
-                await command.RespondAsync($"You executed {command.Data.Name}");
+                Test.Execute(command);
+            }
+
+            if (commandName == "8-ball")
+            {
+                EightBall.Execute(command);
             }
 
             if (commandName == "stop")
@@ -33,7 +37,6 @@ namespace CSDBot
                 {
                     await command.RespondAsync("No Permission");
                 }
-                return;
             }
 
             if (commandName == "reload")
