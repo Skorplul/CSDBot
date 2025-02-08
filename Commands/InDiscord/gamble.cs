@@ -12,14 +12,27 @@ public static class Gamble
 
     public static async Task Execute(SocketSlashCommand command)
     {
+        Log.Debug($"Command \"{command.Data.Name}\" has been executed by {command.User.GlobalName}!");
+        
         int LuckGen = random.Next(0,6);
 
         if (LuckGen == DeathInt)
         {
-            var user = (SocketGuildUser)command.User;
+            try
+            {
+                var user = (SocketGuildUser)command.User;
 
-            await user.ModifyAsync(x => x.TimedOutUntil = DateTimeOffset.UtcNow.AddMinutes(10));
-            await command.RespondAsync("Das war wohl nichts. You Dead :)");
+                await user.ModifyAsync(x => x.TimedOutUntil = DateTimeOffset.UtcNow.AddMinutes(10));
+                await command.RespondAsync("Das war wohl nichts. You Dead :)");
+            }
+            catch (Exception ex)
+            {
+                if (ex.ToString().Contains("50013: Missing Permissions"))
+                {
+                    await command.RespondAsync("Error: 50013 \n Bitte an @Skorp 1.0 melden!");
+                    Log.Error(ex.ToString());
+                }
+            }
         }
         else
         {

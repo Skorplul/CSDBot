@@ -39,7 +39,7 @@ namespace CSDBot
 
             if (commandName == "reload")
             {
-                await Reload.Execute();
+                await Reload.Execute(command);
             }
 
             if (commandName == "gamble")
