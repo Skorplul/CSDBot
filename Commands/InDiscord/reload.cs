@@ -7,7 +7,7 @@ namespace CSDBot.Commands.InDiscord;
 
 public static class Reload
 {
-    async public static void Execute()
+    async public static Task Execute()
     {
         // Let's do our global command
                 var globalCommand = new SlashCommandBuilder();
@@ -20,6 +20,7 @@ public static class Reload
                     "8-ball",
                     "test",
                     "reload",
+                    "gamble"
                 };
 
                 List<string> commDesc = new List<string>()
@@ -28,6 +29,7 @@ public static class Reload
                     "Ask him something!",
                     "test",
                     "reload commands?",
+                    "Gamble for your right of speach. (1:6)"
                 };
 
                 foreach (string comm in commName)

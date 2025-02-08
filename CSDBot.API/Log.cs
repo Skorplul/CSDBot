@@ -19,7 +19,7 @@ namespace CSDBot.API
         /// <param name="message">The message to be sent.</param>
         public static void Debug(string message)
         {
-            if (Config.Instance.IsDebug)
+            //if (Config.Instance.IsDebug)
                 Console.WriteLine($"[{DateTime.Now.ToString()}] [DEBUG]  {message}", Console.ForegroundColor = ConsoleColor.Cyan);
         }
 

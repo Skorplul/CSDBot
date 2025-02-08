@@ -7,7 +7,7 @@ public static class EightBall
 {
     readonly static Random Random = new Random();
 
-    async public static void Execute(SocketSlashCommand command)
+    async public static Task Execute(SocketSlashCommand command)
     {
         Log.Debug($"Command \"{command.Data.Name}\" has been executed by {command.User.GlobalName}!");
         

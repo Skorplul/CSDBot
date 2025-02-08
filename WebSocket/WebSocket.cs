@@ -1,4 +1,5 @@
-﻿using CSDBot.Commands.InConsole;
+﻿using System.Threading.Tasks;
+using CSDBot.Commands.InConsole;
 using Discord;
 using Discord.WebSocket;
 using Log = CSDBot.API.Log;
@@ -13,6 +14,7 @@ namespace CSDBot
         {
             string bottoken = Config.Instance.BotToken;
             Log.Debug("Token Loaded...");
+            await Task.Delay(100);
 
             _client = new DiscordSocketClient();
 
@@ -28,7 +30,7 @@ namespace CSDBot
         }
 
         // This method runs on a background thread and processes console commands.
-        private static void HandleConsoleInput()
+        private static async Task HandleConsoleInput()
         {
             while (true)
             {
@@ -50,6 +52,8 @@ namespace CSDBot
                     //      Log.Debug($"Command {input} has been registered.")
                     // }
                 }
+
+                await Task.Delay(100);
             }
         }
     }

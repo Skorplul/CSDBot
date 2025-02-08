@@ -46,6 +46,7 @@ public sealed class Config
                     if (_instance == null)
                     {
                         _instance = LoadConfig(ConfigPath); // Load YAML when first accessed
+                        Task.Delay(500);
                     }
                 }
             }
@@ -53,8 +54,10 @@ public sealed class Config
         }
     }
 
+
     private static Config LoadConfig(string filePath)
     {
+
         try{
             if (!File.Exists(filePath))
             {
@@ -69,7 +72,7 @@ public sealed class Config
                 // YAML-Content in die Datei schreiben
                 Log.Debug($"write before : {yamlContent}");
                 File.WriteAllText(filePath, yamlContent, new System.Text.UTF8Encoding(false));
-                Log.Debug($"Konfigurationsdatei wurde erstellt: {Path.GetFullPath(filePath)}");
+                Log.Debug($"Konfigurationsdatei wurde erstellt: {Path.GetFullPath(filePath)}"); 
             }
 
         

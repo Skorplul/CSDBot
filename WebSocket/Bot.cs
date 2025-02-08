@@ -13,12 +13,12 @@ namespace CSDBot
 
             if (commandName == "test")
             {
-                Test.Execute(command);
+                await Test.Execute(command);
             }
 
             if (commandName == "8-ball")
             {
-                EightBall.Execute(command);
+                await EightBall.Execute(command);
             }
 
             if (commandName == "stop")
@@ -39,7 +39,12 @@ namespace CSDBot
 
             if (commandName == "reload")
             {
-                Reload.Execute();
+                await Reload.Execute();
+            }
+
+            if (commandName == "gamble")
+            {
+                await Gamble.Execute(command);
             }
         }
     }
