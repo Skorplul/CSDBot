@@ -11,7 +11,7 @@ public static class EightBall
     {
         Log.Debug($"Command \"{command.Data.Name}\" has been executed by {command.User.GlobalName}!");
         
-        string answer =  Config.Instance.BallAnswr[Random.Next(0, 9)];
+        string answer =  Config.Instance.BallAnswr[Random.Next(0, Config.Instance.BallAnswr.Count)];
 
         await command.RespondAsync($"{answer}");
     }
