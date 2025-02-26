@@ -52,16 +52,16 @@ public sealed class Config
             string yamlContent = serializer.Serialize(firstConf);
             
             // YAML-Content in die Datei schreiben
-            Log.Warn($"before : {yamlContent}");
+            // Log.Warn($"before : {yamlContent}");
             File.WriteAllText(filePath, yamlContent, new System.Text.UTF8Encoding(false));
-            Log.Debug($"Konfigurationsdatei wurde erstellt: {Path.GetFullPath(filePath)}");
+            Log.Info($"Konfigurationsdatei wurde erstellt: {Path.GetFullPath(filePath)}");
         }
 
         try{
             var yaml = File.ReadAllText(filePath, new System.Text.UTF8Encoding(false));
             var deserializer = new DeserializerBuilder().WithNamingConvention(CamelCaseNamingConvention.Instance).Build();
 
-            Log.Warn($"after : {yaml}");
+            // Log.Warn($"after : {yaml}");
 
             return deserializer.Deserialize<Config>(yaml);
         }
