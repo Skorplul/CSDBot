@@ -1,7 +1,6 @@
-﻿using Discord;
-using Discord.Net;
+﻿using CSDBot.Commands;
+using CSDBot.Commands.InDiscord;
 using Discord.WebSocket;
-using Newtonsoft.Json;
 using Log = CSDBot.API.Log;
 
 namespace CSDBot
@@ -14,9 +13,12 @@ namespace CSDBot
 
             if (commandName == "test")
             {
-                Log.Debug($"Command \"{command.Data.Name}\" has been executed by {command.User.GlobalName}!");
-                //Console.WriteLine(command.CommandName);
-                await command.RespondAsync($"You executed {command.Data.Name}");
+                await Test.Execute(command);
+            }
+
+            if (commandName == "8-ball")
+            {
+                await EightBall.Execute(command);
             }
 
             if (commandName == "stop")
@@ -31,33 +33,18 @@ namespace CSDBot
                 }
                 else
                 {
-                    await command.RespondAsync("No Permission");
+                    await command.RespondAsync("No Permission", null, false, true);
                 }
-                return;
             }
 
             if (commandName == "reload")
             {
-                // Let's do our global command
-                var globalCommand = new SlashCommandBuilder();
-                globalCommand.WithName("stop");
-                globalCommand.WithDescription("Stop da bot!");
+                await Reload.Execute(command);
+            }
 
-                try
-                {
-                    // With global commands we don't need the guild.
-                    await WebSocket._client.CreateGlobalApplicationCommandAsync(globalCommand.Build());
-                    // Using the ready event is a simple implementation for the sake of the example. Suitable for testing and development.
-                    // For a production bot, it is recommended to only run the CreateGlobalApplicationCommandAsync() once for each command.
-                }
-                catch (HttpException exception)
-                {
-                    // If our command was invalid, we should catch an ApplicationCommandException. This exception contains the path of the error as well as the error message. You can serialize the Error field in the exception to get a visual of where your error is.
-                    var json = JsonConvert.SerializeObject(exception.Errors, Formatting.Indented);
-
-                    // You can send this error somewhere or just print it to the console, for this example we're just going to print it.
-                    Log.Error(json);
-                }
+            if (commandName == "gamble")
+            {
+                await Gamble.Execute(command);
             }
         }
     }
