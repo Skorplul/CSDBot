@@ -25,6 +25,7 @@ namespace CSDBot
             await _client.StartAsync();
 
             await Task.Run(() => HandleConsoleInput());
+            await Task.Run(() => Bot.UpdatePrecence());
 
             await Task.Delay(-1);
         }
