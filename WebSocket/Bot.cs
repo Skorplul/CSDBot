@@ -49,7 +49,7 @@ namespace CSDBot
             }
         }
 
-        private static async Task PlayerPresence()
+        internal static async Task PlayerPresence()
         {
             string apiUrl = $"https://api.scpslgame.com/serverinfo.php?id={Config.Instance.SL_Acc_ID}&key={Config.Instance.SL_API_Key}&players=true&online=true";
 
@@ -64,7 +64,7 @@ namespace CSDBot
                 if (responseObject != null && responseObject.Success && responseObject.Servers.Length > 0)
                 {
                     var server = responseObject.Servers[0]; // the first server in the list
-                    await WebSocket._client.SetGameAsync($"auf dem Server", type: ActivityType.Playing);
+                    await WebSocket._client.SetActivityAsync(new Game("auf dem Server", ActivityType.Playing));
 
                     await Task.Delay(1000*responseObject.Cooldown + 1000*5);
                 }
