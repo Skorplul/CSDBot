@@ -16,19 +16,11 @@ public sealed class Config
     [Description("The token for the bot used.")]
     public string BotToken { get; set; } = "";
 
-    [Description("List of answers for 8-ball.")]
-    public List<string> BallAnswr = new List<string>()
-    {
-        "Von mir aus, kannst du das tun.",
-        "Nein.",
-        "Warum sollte man das tun wollen.",
-        "Tja, dafür bring ich dich um.",
-        "Joa mach halt.",
-        "Wenns sein muss...",
-        "Gute Idee!",
-        "Mach das.",
-        "Gerne."
-    };
+    [Description("The Northwood API key. Ask Skorp")]
+    public string SL_API_Key { get; set; } = "";
+
+    [Description("The server verify acc ID. Ask Skorp")]
+    public string SL_Acc_ID { get; set; } = "";
 
     public Config() 
     { 
@@ -57,8 +49,8 @@ public sealed class Config
 
     private static Config LoadConfig(string filePath)
     {
-
-        try{
+        try
+        {
             if (!File.Exists(filePath))
             {
                 Log.Warn($"Config file not found: {filePath}, creating new one!");

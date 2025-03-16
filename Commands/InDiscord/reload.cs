@@ -20,21 +20,19 @@ public static class Reload
         List<string> commName = new List<string>()
         {
             "stop",
-            "8-ball",
             "test",
             "reload",
-             "gamble"
         };
 
         List<string> commDesc = new List<string>()
         {
             "Stop da bot!",
-            "Ask him something!",
             "test",
             "reload commands?",
-            "Gamble for your right of speach. (1:6)"
         };
 
+
+        //need to redo for class itteration!!
         foreach (string comm in commName)
         { 
             globalCommand.WithName(comm);
