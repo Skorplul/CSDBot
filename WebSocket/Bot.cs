@@ -14,6 +14,7 @@ namespace CSDBot
             while(true)
             {
                 await PlayerPresence();
+                await Task.Delay(500);
             }
         }
 
@@ -65,7 +66,7 @@ namespace CSDBot
                     var server = responseObject.Servers[0]; // the first server in the list
                     await WebSocket._client.SetGameAsync($"auf dem Server", type: ActivityType.Playing);
 
-                    await Task.Delay(responseObject.Cooldown + 5);
+                    await Task.Delay(1000*responseObject.Cooldown + 1000*5);
                 }
                 else
                 {
