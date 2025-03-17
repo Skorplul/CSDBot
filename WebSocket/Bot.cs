@@ -13,6 +13,7 @@ namespace CSDBot
         {
             while(true)
             {
+                Log.Debug("Updating Precence");
                 await PlayerPresence();
                 await Task.Delay(500);
             }

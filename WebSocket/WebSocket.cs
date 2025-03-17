@@ -26,11 +26,12 @@ namespace CSDBot
             _client.Ready += async () =>
             {
                 Log.Debug("Bot is ready! Setting presence...");
-                await Bot.PlayerPresence(); // Run once on startup
+                
+                // Start presence update in the background
+                _ = Task.Run(Bot.UpdatePrecence);
             };
 
             await Task.Run(() => HandleConsoleInput());
-            await Task.Run(() => Bot.UpdatePrecence());
 
             await Task.Delay(-1);
         }
