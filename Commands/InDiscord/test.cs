@@ -1,7 +1,7 @@
 using Discord.WebSocket;
-using Log = CSDBot.API.Log;
+using Log = PRMainBot.API.Log;
 
-namespace CSDBot.Commands;
+namespace PRMainBot.Commands;
 
 public class Test
 {

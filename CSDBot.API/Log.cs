@@ -1,16 +1,25 @@
 using Discord;
 
-namespace CSDBot.API
+namespace PRMainBot.API
 {
     public static class Log
     {
-	/// <summary>
+	    /// <summary>
         /// Sends an Info level messages to the Bot console.
         /// </summary>
         /// <param name="message">The message to be sent.</param>
         public static void Info(string message)
         {
             Console.WriteLine($"[{DateTime.Now.ToString()}] [INFO]  {message}", Console.ForegroundColor = ConsoleColor.Green);
+        }
+
+        /// <summary>
+        /// Used for Command feedback.
+        /// </summary>
+        /// <param name="message"></param>
+        public static void Command(string message)
+        {
+            Console.WriteLine($"[{DateTime.Now.ToString()}] {message}", Console.ForegroundColor = ConsoleColor.Magenta);
         }
 
         /// <summary>

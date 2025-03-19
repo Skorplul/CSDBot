@@ -1,6 +1,6 @@
-using Log = CSDBot.API.Log;
+using Log = PRMainBot.API.Log;
 
-namespace CSDBot.Commands.InConsole;
+namespace PRMainBot.Commands.InConsole;
 
 public static class Exit
 {

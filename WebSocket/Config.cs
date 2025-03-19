@@ -1,5 +1,5 @@
 using System.ComponentModel;
-using CSDBot.API;
+using PRMainBot.API;
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
 

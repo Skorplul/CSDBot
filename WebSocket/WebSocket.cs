@@ -1,10 +1,10 @@
 ﻿using System.Threading.Tasks;
-using CSDBot.Commands.InConsole;
+using PRMainBot.Commands.InConsole;
 using Discord;
 using Discord.WebSocket;
-using Log = CSDBot.API.Log;
+using Log = PRMainBot.API.Log;
 
-namespace CSDBot
+namespace PRMainBot
 {
     public static class WebSocket
     {
@@ -45,10 +45,17 @@ namespace CSDBot
 
                 if (!string.IsNullOrEmpty(input))
                 {
+                    Log.Command($">>> {input}");
                     if (input.Equals("exit", StringComparison.OrdinalIgnoreCase))
                     {
                         Exit.Execute();
                     }
+                    else
+                    {
+                        Log.Command($"Command {input} does not exist!");
+                    }
+
+
                     
                     // else if (input.Equals("", StringComparison.OrdinalIgnoreCase))
                     // {

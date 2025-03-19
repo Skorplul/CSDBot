@@ -1,11 +1,11 @@
 ﻿using System.Text.Json;
-using CSDBot.Commands;
-using CSDBot.Commands.InDiscord;
+using PRMainBot.Commands;
+using PRMainBot.Commands.InDiscord;
 using Discord;
 using Discord.WebSocket;
-using Log = CSDBot.API.Log;
+using Log = PRMainBot.API.Log;
 
-namespace CSDBot
+namespace PRMainBot
 {
     internal class Bot
     {

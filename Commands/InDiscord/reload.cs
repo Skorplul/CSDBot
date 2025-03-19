@@ -2,9 +2,9 @@ using Discord;
 using Discord.Net;
 using Discord.WebSocket;
 using Newtonsoft.Json;
-using Log = CSDBot.API.Log;
+using Log = PRMainBot.API.Log;
 
-namespace CSDBot.Commands.InDiscord;
+namespace PRMainBot.Commands.InDiscord;
 
 public static class Reload
 {
