@@ -4,6 +4,7 @@ using PRMainBot.Commands.InDiscord;
 using Discord;
 using Discord.WebSocket;
 using Log = PRMainBot.API.Log;
+using PRMainBot.API;
 
 namespace PRMainBot
 {
@@ -65,9 +66,29 @@ namespace PRMainBot
                 if (responseObject != null && responseObject.Success && responseObject.Servers.Length > 0)
                 {
                     var server = responseObject.Servers[0]; // the first server in the list
-                    await WebSocket._client.SetActivityAsync(new Game($"{server.Players} Online", ActivityType.Playing));
 
-                    await Task.Delay(1000*responseObject.Cooldown + 1000*5);
+                    if (!server.Online)
+                    {
+                        await WebSocket._client.SetActivityAsync(new Game($"WARTUNGSARBEITEN", ActivityType.Playing));
+                        await WebSocket._client.SetStatusAsync(UserStatus.DoNotDisturb);
+
+                        await Task.Delay(1000*responseObject.Cooldown + 1000*5);
+                    }
+                    else if (!server.Online)
+                    {
+                        await WebSocket._client.SetActivityAsync(new Game($"Offline", ActivityType.Playing));
+                        await WebSocket._client.SetStatusAsync(UserStatus.DoNotDisturb);
+
+                        await Task.Delay(1000*responseObject.Cooldown + 1000*5);
+                    }
+                    else
+                    {
+                        await WebSocket._client.SetActivityAsync(new Game($"{server.Players} Online", ActivityType.Playing));
+                        if (server.Players.Contains("0/"))
+                        await WebSocket._client.SetStatusAsync(UserStatus.Idle);
+
+                        await Task.Delay(1000*responseObject.Cooldown + 1000*5);
+                    }
                 }
                 else
                 {
