@@ -50,6 +50,10 @@ namespace PRMainBot
                     {
                         Exit.Execute();
                     }
+                    else if (input.Equals("maintenance", StringComparison.OrdinalIgnoreCase))
+                    {
+                        Maintenance.Execute();
+                    }
                     else
                     {
                         Log.Command($"Command {input} does not exist!");
