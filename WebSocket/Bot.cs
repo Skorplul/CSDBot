@@ -67,7 +67,7 @@ namespace PRMainBot
                 {
                     var server = responseObject.Servers[0]; // the first server in the list
 
-                    if (!server.Online)
+                    if (Settings.IsMaintenance)
                     {
                         await WebSocket._client.SetActivityAsync(new Game($"WARTUNGSARBEITEN", ActivityType.Playing));
                         await WebSocket._client.SetStatusAsync(UserStatus.DoNotDisturb);
