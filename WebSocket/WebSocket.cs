@@ -1,16 +1,12 @@
-﻿using System.Reflection;
-using Discord.Interactions;
+﻿using System.Threading.Tasks;
 using PRMainBot.Commands.InConsole;
 using Discord;
 using Discord.WebSocket;
 using Log = PRMainBot.API.Log;
-using PRMainBot.Commands;
-using Discord.Net;
-using Newtonsoft.Json;
 
 namespace PRMainBot
 {
-    public class WebSocket
+    public static class WebSocket
     {
         public static DiscordSocketClient? _client;
 
@@ -29,8 +25,6 @@ namespace PRMainBot
             await _client.StartAsync();
             _client.Ready += async () =>
             {
-                await ReadyAsync();
-
                 Log.Debug("Bot is ready! Setting presence...");
                 
                 // Start presence update in the background
@@ -41,38 +35,6 @@ namespace PRMainBot
 
             await Task.Delay(-1);
         }
-
-        private static async Task ReadyAsync()
-        {
-            var commandTypes = Assembly.GetExecutingAssembly().GetTypes()
-                .Where(t => t.IsClass && t.Namespace == "PRMainBot.Commands");
-
-            foreach (var type in commandTypes)
-            {
-                var methods = type.GetMethods()
-                    .Where(m => m.GetCustomAttributes(typeof(SlashCommandAttribute), false).Length > 0);
-
-                foreach (var method in methods)
-                {
-                    var attribute = (SlashCommandAttribute)method.GetCustomAttribute(typeof(SlashCommandAttribute));
-                    var commandBuilder = new SlashCommandBuilder()
-                        .WithName(attribute.Name)
-                        .WithDescription(attribute.Description);
-
-                    try
-                    {
-                        await _client.CreateGlobalApplicationCommandAsync(commandBuilder.Build());
-                        Log.Debug($"Command {attribute.Name} registered successfully.");
-                    }
-                    catch (HttpException exception)
-                    {
-                        var json = JsonConvert.SerializeObject(exception.Errors, Formatting.Indented);
-                        Log.Error(json);
-                    }
-                }
-            }
-        }
-
 
         // This method runs on a background thread and processes console commands.
         private static async Task HandleConsoleInput()
