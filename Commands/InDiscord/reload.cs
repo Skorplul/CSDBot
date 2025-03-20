@@ -10,7 +10,8 @@ public static class Reload
 {
     async public static Task Execute(SocketSlashCommand command)
     {
-        await command.RespondAsync("Reloading all commands now.", ephemeral: true);
+        if (command != null)
+            await command.RespondAsync("Reloading all commands now.", ephemeral: true);
 
         // Let's do our global command
         var globalCommand = new SlashCommandBuilder();

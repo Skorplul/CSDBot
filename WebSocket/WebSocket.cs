@@ -3,6 +3,7 @@ using PRMainBot.Commands.InConsole;
 using Discord;
 using Discord.WebSocket;
 using Log = PRMainBot.API.Log;
+using PRMainBot.Commands.InDiscord;
 
 namespace PRMainBot
 {
@@ -25,8 +26,11 @@ namespace PRMainBot
             await _client.StartAsync();
             _client.Ready += async () =>
             {
-                Log.Debug("Bot is ready! Setting presence...");
+                Log.Debug("Bot is ready! Setting presence and reggistering commands...");
                 
+                // Reggister commands
+                Reload.Execute(null);
+
                 // Start presence update in the background
                 _ = Task.Run(Bot.UpdatePrecence);
             };
