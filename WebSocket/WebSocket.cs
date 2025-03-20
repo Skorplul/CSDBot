@@ -13,7 +13,6 @@ namespace PRMainBot
     public class WebSocket
     {
         public static DiscordSocketClient? _client;
-        private static InteractionService? _commands;
 
         public static async Task Main()
         {
@@ -22,7 +21,6 @@ namespace PRMainBot
             await Task.Delay(100);
 
             _client = new DiscordSocketClient();
-            _commands = new InteractionService(_client.Rest);
 
             _client.Log += Log.Loging;
             _client.SlashCommandExecuted += Bot.SlashCommandHandler;
@@ -34,7 +32,7 @@ namespace PRMainBot
                 await ReadyAsync();
 
                 Log.Debug("Bot is ready! Setting presence...");
-
+                
                 // Start presence update in the background
                 _ = Task.Run(Bot.UpdatePrecence);
             };
@@ -73,13 +71,8 @@ namespace PRMainBot
                     }
                 }
             }
-
-            // Add modules to the InteractionService
-            await _commands.AddModulesAsync(Assembly.GetExecutingAssembly(), null);
-
-            // Register commands with Discord
-            await _commands.RegisterCommandsGloballyAsync();
         }
+
 
         // This method runs on a background thread and processes console commands.
         private static async Task HandleConsoleInput()
@@ -103,6 +96,17 @@ namespace PRMainBot
                     {
                         Log.Command($"Command {input} does not exist!");
                     }
+
+
+                    
+                    // else if (input.Equals("", StringComparison.OrdinalIgnoreCase))
+                    // {
+                    //    
+                    // }
+                    // else
+                    // {
+                    //      Log.Debug($"Command {input} has been registered.")
+                    // }
                 }
 
                 await Task.Delay(100);
