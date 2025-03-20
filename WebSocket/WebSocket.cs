@@ -14,6 +14,7 @@ namespace PRMainBot
     {
         public static DiscordSocketClient? _client;
         private static InteractionService? _commands;
+        private static InteractionServiceConfig? _config;
 
         public static async Task Main()
         {
@@ -22,10 +23,15 @@ namespace PRMainBot
             await Task.Delay(100);
 
             _client = new DiscordSocketClient();
-            _commands = new InteractionService(_client.Rest);
+            _config = new InteractionServiceConfig
+            {
+                LogLevel = LogSeverity.Info
+            };
+            _commands = new InteractionService(_client, _config);
 
             _client.Log += Log.Loging;
             _client.SlashCommandExecuted += Bot.SlashCommandHandler;
+            _client.InteractionCreated += HandleInteraction;
 
             await _client.LoginAsync(TokenType.Bot, bottoken);
             await _client.StartAsync();
@@ -46,39 +52,17 @@ namespace PRMainBot
 
         private static async Task ReadyAsync()
         {
-            var commandTypes = Assembly.GetExecutingAssembly().GetTypes()
-                .Where(t => t.IsClass && t.Namespace == "PRMainBot.Commands");
-
-            foreach (var type in commandTypes)
-            {
-                var methods = type.GetMethods()
-                    .Where(m => m.GetCustomAttributes(typeof(SlashCommandAttribute), false).Length > 0);
-
-                foreach (var method in methods)
-                {
-                    var attribute = (SlashCommandAttribute)method.GetCustomAttribute(typeof(SlashCommandAttribute));
-                    var commandBuilder = new SlashCommandBuilder()
-                        .WithName(attribute.Name)
-                        .WithDescription(attribute.Description);
-
-                    try
-                    {
-                        await _client.CreateGlobalApplicationCommandAsync(commandBuilder.Build());
-                        Log.Debug($"Command {attribute.Name} registered successfully.");
-                    }
-                    catch (HttpException exception)
-                    {
-                        var json = JsonConvert.SerializeObject(exception.Errors, Formatting.Indented);
-                        Log.Error(json);
-                    }
-                }
-            }
-
             // Add modules to the InteractionService
             await _commands.AddModulesAsync(Assembly.GetExecutingAssembly(), null);
 
             // Register commands with Discord
             await _commands.RegisterCommandsGloballyAsync();
+        }
+
+        private static async Task HandleInteraction(SocketInteraction interaction)
+        {
+            var context = new SocketInteractionContext(_client, interaction);
+            await _commands.ExecuteCommandAsync(context, null);
         }
 
         // This method runs on a background thread and processes console commands.
