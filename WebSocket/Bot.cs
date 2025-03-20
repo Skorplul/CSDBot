@@ -34,20 +34,30 @@ namespace PRMainBot
                 if (command.User.Id == 504875989776596992)
                 {
                     Log.Debug($"Command {command.Data.Name} has been executed by {command.User.GlobalName}!");
-                    await command.RespondAsync($"You stopped the bot!");
+                    await command.RespondAsync($"You stopped the bot!", ephemeral: true);
                     await WebSocket._client.StopAsync();
                     await WebSocket._client.LogoutAsync();
                     Environment.Exit(0);
                 }
                 else
                 {
-                    await command.RespondAsync("No Permission", null, false, true);
+                    await command.RespondAsync("No Permission", ephemeral: true);
                 }
             }
 
             if (commandName == "reload")
             {
-                await Reload.Execute(command);
+                if (command.User.Id == 504875989776596992)
+                {
+                    Log.Debug($"Commands have been reloaded by {command.User.GlobalName}!");
+                    
+                    await Reload.Execute(command);
+                }
+                else
+                {
+                    await command.RespondAsync("No Permission", ephemeral: true);
+                }
+                
             }
         }
 

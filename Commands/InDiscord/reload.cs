@@ -10,7 +10,7 @@ public static class Reload
 {
     async public static Task Execute(SocketSlashCommand command)
     {
-        await command.RespondAsync("Reloading all commands now.");
+        await command.RespondAsync("Reloading all commands now.", ephemeral: true);
 
         // Let's do our global command
         var globalCommand = new SlashCommandBuilder();
@@ -37,6 +37,22 @@ public static class Reload
         { 
             globalCommand.WithName(comm);
             globalCommand.WithDescription(commDesc[indexCount]);
+            
+            switch (comm)
+            {
+                case "test":
+                    globalCommand.WithDefaultMemberPermissions(GuildPermission.ViewAuditLog);
+                    break;
+                case "stop":
+                    globalCommand.WithDefaultMemberPermissions(GuildPermission.Administrator);
+                    break;
+                case "reload":
+                    globalCommand.WithDefaultMemberPermissions(GuildPermission.Administrator);
+                    break;
+                default:
+                    break;
+            }
+
             indexCount++;
                 
 
