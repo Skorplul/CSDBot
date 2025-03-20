@@ -3,6 +3,8 @@ using PRMainBot.API;
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
 
+namespace PRMainBot;
+
 public sealed class Config
 {
     private static Config? _instance;

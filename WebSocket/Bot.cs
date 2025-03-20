@@ -1,6 +1,5 @@
 ﻿using System.Text.Json;
 using PRMainBot.Commands;
-using PRMainBot.Commands.InDiscord;
 using Discord;
 using Discord.WebSocket;
 using Log = PRMainBot.API.Log;
