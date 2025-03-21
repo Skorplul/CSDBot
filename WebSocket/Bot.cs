@@ -28,6 +28,10 @@ namespace PRMainBot
             {
                 await Test.Execute(command);
             }
+            if (commandName == "maintenace")
+            {
+                await maintenance.Execute(command);
+            }
 
             if (commandName == "stop")
             {
@@ -51,7 +55,7 @@ namespace PRMainBot
                 {
                     Log.Debug($"Commands have been reloaded by {command.User.GlobalName}!");
                     
-                    await Reload.Execute(command);
+                    await reload.Execute(command);
                 }
                 else
                 {

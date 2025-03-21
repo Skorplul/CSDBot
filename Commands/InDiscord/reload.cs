@@ -6,7 +6,7 @@ using Log = PRMainBot.API.Log;
 
 namespace PRMainBot.Commands.InDiscord;
 
-public static class Reload
+public static class reload
 {
     async public static Task Execute(SocketSlashCommand command)
     {
@@ -23,6 +23,7 @@ public static class Reload
             "stop",
             "test",
             "reload",
+            "maintenace",
         };
 
         List<string> commDesc = new List<string>()
@@ -30,6 +31,7 @@ public static class Reload
             "Stop da bot!",
             "test",
             "reload commands?",
+            "Setzt den Serverstatus auf Wartungsarbeiten.",
         };
 
 
@@ -49,6 +51,9 @@ public static class Reload
                     break;
                 case "reload":
                     globalCommand.WithDefaultMemberPermissions(GuildPermission.Administrator);
+                    break;
+                case "maintenace":
+                    globalCommand.WithDefaultMemberPermissions(GuildPermission.ManageEvents);
                     break;
                 default:
                     break;

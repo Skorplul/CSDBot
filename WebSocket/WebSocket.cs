@@ -29,7 +29,7 @@ namespace PRMainBot
                 Log.Debug("Bot is ready! Setting presence and reggistering commands...");
                 
                 // Reggister commands
-                Reload.Execute(null);
+                reload.Execute(null);
 
                 // Start presence update in the background
                 _ = Task.Run(Bot.UpdatePrecence);
@@ -62,17 +62,6 @@ namespace PRMainBot
                     {
                         Log.Command($"Command {input} does not exist!");
                     }
-
-
-                    
-                    // else if (input.Equals("", StringComparison.OrdinalIgnoreCase))
-                    // {
-                    //    
-                    // }
-                    // else
-                    // {
-                    //      Log.Debug($"Command {input} has been registered.")
-                    // }
                 }
 
                 await Task.Delay(100);
