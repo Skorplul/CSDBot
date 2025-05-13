@@ -22,6 +22,9 @@ public sealed class Config
     [Description("The server verify acc ID. Ask Skorp")]
     public string SL_Acc_ID { get; set; } = "";
 
+    [Description("The Port of tracking server.")]
+    public int Server_Port { get; set; }
+
     public Config() 
     { 
 

@@ -6,6 +6,8 @@ using Discord.WebSocket;
 using Log = PRMainBot.API.Log;
 using PRMainBot.API;
 
+#nullable enable
+
 namespace PRMainBot
 {
     internal class Bot
@@ -79,7 +81,9 @@ namespace PRMainBot
 
                 if (responseObject != null && responseObject.Success && responseObject.Servers.Length > 0)
                 {
-                    var server = responseObject.Servers[0]; // the first server in the list
+                    var server = responseObject.Servers.FirstOrDefault(s => s.Port == Config.Instance.Server_Port); // the first server in the list
+                    if (server == null)
+                        throw new Exception("No Matching Port Found!!"); return;
 
                     if (Settings.IsMaintenance)
                     {
