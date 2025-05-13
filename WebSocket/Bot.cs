@@ -83,21 +83,21 @@ namespace PRMainBot
                 {
                     var server = responseObject.Servers.FirstOrDefault(s => s.Port == Config.Instance.Server_Port); // the first server in the list
                     if (server == null)
-                        throw new Exception("No Matching Port Found!!"); return;
+                        throw new Exception("No Matching Port Found!!");
 
                     if (Settings.IsMaintenance)
                     {
                         await WebSocket._client.SetActivityAsync(new Game($"WARTUNGSARBEITEN", ActivityType.Playing));
                         await WebSocket._client.SetStatusAsync(UserStatus.DoNotDisturb);
 
-                        await Task.Delay(1000*responseObject.Cooldown + 1000*5);
+                        await Task.Delay(1000*responseObject.Cooldown + 60000);
                     }
                     else if (!server.Online)
                     {
                         await WebSocket._client.SetActivityAsync(new Game($"Offline", ActivityType.Playing));
                         await WebSocket._client.SetStatusAsync(UserStatus.DoNotDisturb);
 
-                        await Task.Delay(1000*responseObject.Cooldown + 1000*5);
+                        await Task.Delay(1000*responseObject.Cooldown + 60000);
                     }
                     else
                     {
@@ -112,7 +112,7 @@ namespace PRMainBot
                             await WebSocket._client.SetStatusAsync(UserStatus.Online);
                         }
 
-                        await Task.Delay(1000*responseObject.Cooldown + 1000*5);
+                        await Task.Delay(1000*responseObject.Cooldown + 60000);
                     }
                 }
                 else
@@ -123,6 +123,7 @@ namespace PRMainBot
             catch (Exception ex)
             {
                 Log.Error($"Error: {ex.Message}");
+                await Task.Delay(30000);
             }
         }
     }
