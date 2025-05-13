@@ -23,7 +23,7 @@ public sealed class Config
     public string SL_Acc_ID { get; set; } = "";
 
     [Description("The Port of tracking server.")]
-    public int Server_Port { get; set; }
+    public int Server_Port { get; set; } = 7777;
 
     public Config() 
     { 
