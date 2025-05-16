@@ -16,6 +16,9 @@ public sealed class Config
     [Description("The token for the bot used.")]
     public string BotToken { get; set; } = "";
 
+    [Description("Discord channelID for counting.")]
+    public string CountingChannel { get; set; } = "";
+
     [Description("The Northwood API key. Ask Skorp")]
     public string SL_API_Key { get; set; } = "";
 
