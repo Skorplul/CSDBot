@@ -67,10 +67,18 @@ namespace PRMainBot
             }
         }
 
+        private static bool _presenceIsRunning = false;
         internal static async Task PlayerPresence()
         {
             string apiUrl = $"https://api.scpslgame.com/serverinfo.php?id={Config.Instance.SL_Acc_ID}&key={Config.Instance.SL_API_Key}&players=true&online=true";
 
+            if (_presenceIsRunning)
+            {
+                Log.Warn("PlayerPresence already running — ignoring this call.");
+                return;
+            }
+
+            _presenceIsRunning = true;
             try
             {
                 using HttpClient client = new HttpClient();
