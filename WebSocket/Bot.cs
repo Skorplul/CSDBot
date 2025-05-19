@@ -24,7 +24,7 @@ namespace PRMainBot
 
         public static async Task SlashCommandHandler(SocketSlashCommand command)
         {
-             string commandName = command.Data.Name;
+            string commandName = command.Data.Name;
 
             if (commandName == "test")
             {
@@ -56,20 +56,44 @@ namespace PRMainBot
                 if (command.User.Id == 504875989776596992)
                 {
                     Log.Debug($"Commands have been reloaded by {command.User.GlobalName}!");
-                    
+
                     await reload.Execute(command);
                 }
                 else
                 {
                     await command.RespondAsync("No Permission", ephemeral: true);
                 }
-                
+
             }
         }
 
+        private static int? _count;
+        internal static async Task Counting(SocketMessage msg)
+        {
+            if (msg.Channel.Id != Config.Instance.CountingChannel)
+                return;
+
+            if (!int.TryParse(msg.Content, out int result))
+                return;
+
+            if (_count == null)
+            {
+
+            }
+        }
+
+        private static bool _presenceIsRunning = false;
         internal static async Task PlayerPresence()
         {
             string apiUrl = $"https://api.scpslgame.com/serverinfo.php?id={Config.Instance.SL_Acc_ID}&key={Config.Instance.SL_API_Key}&players=true&online=true";
+            
+            if (_presenceIsRunning)
+            {
+                Log.Warn("PlayerPresence already running — ignoring this call.");
+                return;
+            }
+
+            _presenceIsRunning = true;
 
             try
             {

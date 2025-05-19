@@ -21,6 +21,7 @@ namespace PRMainBot
 
             _client.Log += Log.Loging;
             _client.SlashCommandExecuted += Bot.SlashCommandHandler;
+            _client.MessageReceived += Bot.Counting;
 
             await _client.LoginAsync(TokenType.Bot, bottoken);
             await _client.StartAsync();

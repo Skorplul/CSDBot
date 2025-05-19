@@ -17,7 +17,10 @@ public sealed class Config
     public string BotToken { get; set; } = "";
 
     [Description("Discord channelID for counting.")]
-    public string CountingChannel { get; set; } = "";
+    public ulong CountingChannel { get; set; } = 0;
+
+    [Description("The last number of counting, the bot has seen.")]
+    public string LastCountNr { get; set; } = "0";
 
     [Description("The Northwood API key. Ask Skorp")]
     public string SL_API_Key { get; set; } = "";
