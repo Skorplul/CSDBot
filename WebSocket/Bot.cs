@@ -73,20 +73,31 @@ namespace PRMainBot
             if (msg.Channel.Id != Config.Instance.CountingChannel)
                 return;
 
-            if (!int.TryParse(msg.Content, out int result))
+            if (!int.TryParse(msg.Content, out int msgNr))
                 return;
 
             if (_count == null)
             {
-
+                _count = Config.Instance.LastCountNr;
+            }
+            
+            if (msgNr == _count++)
+            {
+                _count++;
+                await msg.AddReactionAsync(Emote.Parse(":white_check_mark:"));
+                return;
+            }
+            else
+            {
+                await msg.AddReactionAsync(Emote.Parse("<:redcross:758380151238033419>"));
+                await msg.Channel.SendMessageAsync($"Was ein Skillissue. Die richtige Nummer wäre {_count++} gewesen.");
+                return;
             }
         }
 
         private static bool _presenceIsRunning = false;
         internal static async Task PlayerPresence()
         {
-            string apiUrl = $"https://api.scpslgame.com/serverinfo.php?id={Config.Instance.SL_Acc_ID}&key={Config.Instance.SL_API_Key}&players=true&online=true";
-            
             if (_presenceIsRunning)
             {
                 Log.Warn("PlayerPresence already running — ignoring this call.");
@@ -97,52 +108,9 @@ namespace PRMainBot
 
             try
             {
-                using HttpClient client = new HttpClient();
-                string responseJson = await client.GetStringAsync(apiUrl);
-
-                // Parse JSON response
-                var responseObject = JsonSerializer.Deserialize<ApiResponse>(responseJson);
-
-                if (responseObject != null && responseObject.Success && responseObject.Servers.Length > 0)
-                {
-                    var server = responseObject.Servers.FirstOrDefault(s => s.Port == Config.Instance.Server_Port); // the first server in the list
-                    if (server == null)
-                        throw new Exception("No Matching Port Found!!");
-
-                    if (Settings.IsMaintenance)
-                    {
-                        await WebSocket._client.SetActivityAsync(new Game($"WARTUNGSARBEITEN", ActivityType.Playing));
-                        await WebSocket._client.SetStatusAsync(UserStatus.DoNotDisturb);
-
-                        await Task.Delay(1000*responseObject.Cooldown + 60000);
-                    }
-                    else if (!server.Online)
-                    {
-                        await WebSocket._client.SetActivityAsync(new Game($"Offline", ActivityType.Playing));
-                        await WebSocket._client.SetStatusAsync(UserStatus.DoNotDisturb);
-
-                        await Task.Delay(1000*responseObject.Cooldown + 60000);
-                    }
-                    else
-                    {
-                        await WebSocket._client.SetActivityAsync(new Game($"{server.Players} Online", ActivityType.Playing));
-
-                        if (server.Players.Contains("0/"))
-                        {
-                            await WebSocket._client.SetStatusAsync(UserStatus.Idle);
-                        }
-                        else
-                        {
-                            await WebSocket._client.SetStatusAsync(UserStatus.Online);
-                        }
-
-                        await Task.Delay(1000*responseObject.Cooldown + 60000);
-                    }
-                }
-                else
-                {
-                    Log.Warn("No servers found or API returned an error.");
-                }
+                await WebSocket._client.SetActivityAsync(new Game("Bot mit Skill", ActivityType.Playing));
+                _presenceIsRunning = false;
+                return;
             }
             catch (Exception ex)
             {
@@ -150,21 +118,5 @@ namespace PRMainBot
                 await Task.Delay(30000);
             }
         }
-    }
-
-    // Classes for JSON deserialization
-    public class ApiResponse
-    {
-        public bool Success { get; set; }
-        public int Cooldown { get; set; }
-        public ServerInfo[] Servers { get; set; }
-    }
-
-    public class ServerInfo
-    {
-        public int ID { get; set; }
-        public int Port { get; set; }
-        public bool Online { get; set; }
-        public string Players { get; set; } // Example format: "0/20"
     }
 }

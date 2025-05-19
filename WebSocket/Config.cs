@@ -20,16 +20,7 @@ public sealed class Config
     public ulong CountingChannel { get; set; } = 0;
 
     [Description("The last number of counting, the bot has seen.")]
-    public string LastCountNr { get; set; } = "0";
-
-    [Description("The Northwood API key. Ask Skorp")]
-    public string SL_API_Key { get; set; } = "";
-
-    [Description("The server verify acc ID. Ask Skorp")]
-    public string SL_Acc_ID { get; set; } = "";
-
-    [Description("The Port of tracking server.")]
-    public int Server_Port { get; set; } = 7777;
+    public int LastCountNr { get; set; } = 0;
 
     public Config() 
     { 
