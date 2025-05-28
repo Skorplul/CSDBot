@@ -70,6 +70,7 @@ namespace PRMainBot
         private static int? _count;
         internal static async Task Counting(SocketMessage msg)
         {
+            Log.Debug($"Recieved message.");
             if (msg.Channel.Id != Config.Instance.CountingChannel)
                 return;
 
@@ -90,7 +91,8 @@ namespace PRMainBot
             else
             {
                 await msg.AddReactionAsync(Emote.Parse("<:redcross:758380151238033419>"));
-                await msg.Channel.SendMessageAsync($"Was ein Skillissue. Die richtige Nummer wäre {_count++} gewesen.");
+                _count = 0;
+                await msg.Channel.SendMessageAsync($"Was ein Skillissue. Die richtige Nummer wäre {_count++} gewesen.\nEs geht wieder bei 1 los!");
                 return;
             }
         }
