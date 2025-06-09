@@ -111,7 +111,7 @@ namespace PRMainBot
                     {
                         await WebSocket._client.SetActivityAsync(new Game($"{server.Players} Online", ActivityType.Playing));
 
-                        if (server.Players.Contains("0/"))
+                        if (server.Players == "0/28")
                         {
                             await WebSocket._client.SetStatusAsync(UserStatus.Idle);
                         }
