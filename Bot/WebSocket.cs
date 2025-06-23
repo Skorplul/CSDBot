@@ -26,7 +26,10 @@ namespace PRMainBot
             await _client.StartAsync();
             _client.Ready += async () =>
             {
-                Log.Debug("Bot is ready! Setting presence and reggistering commands...");
+                Log.Debug("Bot is ready! Setting presence, reggistering commands and loading DB...");
+
+                // Load DB
+                Database.API.InitDB();
                 
                 // Reggister commands
                 reload.Execute(null);

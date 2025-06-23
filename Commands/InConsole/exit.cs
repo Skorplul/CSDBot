@@ -7,6 +7,8 @@ public static class Exit
     public static void Execute()
     {
         Log.Debug("Shutting down...");
+        // Closing DB
+        Database.API.CloseDB();
 
         // Shut down the Discord client gracefully.
         WebSocket._client?.LogoutAsync().GetAwaiter().GetResult();
