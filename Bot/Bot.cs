@@ -68,7 +68,7 @@ namespace PRMainBot
         }
 
         private static bool _presenceIsRunning = false;
-        internal static async Task PlayerPresence()
+        private static async Task PlayerPresence()
         {
             string apiUrl = $"https://api.scpslgame.com/serverinfo.php?id={Config.Instance.SL_Acc_ID}&key={Config.Instance.SL_API_Key}&players=true&online=true";
 
@@ -79,59 +79,62 @@ namespace PRMainBot
             }
 
             _presenceIsRunning = true;
-            try
+            while (true)
             {
-                using HttpClient client = new HttpClient();
-                string responseJson = await client.GetStringAsync(apiUrl);
-
-                // Parse JSON response
-                var responseObject = JsonSerializer.Deserialize<ApiResponse>(responseJson);
-
-                if (responseObject != null && responseObject.Success && responseObject.Servers.Length > 0)
+                try
                 {
-                    var server = responseObject.Servers.FirstOrDefault(s => s.Port == Config.Instance.Server_Port); // the first server in the list
-                    if (server == null)
-                        throw new Exception("No Matching Port Found!!");
+                    using HttpClient client = new HttpClient();
+                    string responseJson = await client.GetStringAsync(apiUrl);
 
-                    if (Settings.IsMaintenance)
+                    // Parse JSON response
+                    var responseObject = JsonSerializer.Deserialize<ApiResponse>(responseJson);
+
+                    if (responseObject != null && responseObject.Success && responseObject.Servers.Length > 0)
                     {
-                        await WebSocket._client.SetActivityAsync(new Game($"WARTUNGSARBEITEN", ActivityType.Playing));
-                        await WebSocket._client.SetStatusAsync(UserStatus.DoNotDisturb);
+                        var server = responseObject.Servers.FirstOrDefault(s => s.Port == Config.Instance.Server_Port); // the first server in the list
+                        if (server == null)
+                            throw new Exception("No Matching Port Found!!");
 
-                        await Task.Delay(1000*responseObject.Cooldown + 60000);
-                    }
-                    else if (!server.Online)
-                    {
-                        await WebSocket._client.SetActivityAsync(new Game($"Offline", ActivityType.Playing));
-                        await WebSocket._client.SetStatusAsync(UserStatus.DoNotDisturb);
-
-                        await Task.Delay(1000*responseObject.Cooldown + 60000);
-                    }
-                    else
-                    {
-                        await WebSocket._client.SetActivityAsync(new Game($"{server.Players} Online", ActivityType.Playing));
-
-                        if (server.Players == "0/28")
+                        if (Settings.IsMaintenance)
                         {
-                            await WebSocket._client.SetStatusAsync(UserStatus.Idle);
+                            await WebSocket._client.SetActivityAsync(new Game($"WARTUNGSARBEITEN", ActivityType.Playing));
+                            await WebSocket._client.SetStatusAsync(UserStatus.DoNotDisturb);
+
+                            await Task.Delay(1000 * responseObject.Cooldown + 60000);
+                        }
+                        else if (!server.Online)
+                        {
+                            await WebSocket._client.SetActivityAsync(new Game($"Offline", ActivityType.Playing));
+                            await WebSocket._client.SetStatusAsync(UserStatus.DoNotDisturb);
+
+                            await Task.Delay(1000 * responseObject.Cooldown + 60000);
                         }
                         else
                         {
-                            await WebSocket._client.SetStatusAsync(UserStatus.Online);
-                        }
+                            await WebSocket._client.SetActivityAsync(new Game($"{server.Players} Online", ActivityType.Playing));
 
-                        await Task.Delay(1000*responseObject.Cooldown + 60000);
+                            if (server.Players.StartsWith("0/"))
+                            {
+                                await WebSocket._client.SetStatusAsync(UserStatus.Idle);
+                            }
+                            else
+                            {
+                                await WebSocket._client.SetStatusAsync(UserStatus.Online);
+                            }
+
+                            await Task.Delay(1000 * responseObject.Cooldown + 60000);
+                        }
+                    }
+                    else
+                    {
+                        Log.Warn("No servers found or API returned an error.");
                     }
                 }
-                else
+                catch (Exception ex)
                 {
-                    Log.Warn("No servers found or API returned an error.");
+                    Log.Error($"Error: {ex.Message}");
+                    await Task.Delay(30000);
                 }
-            }
-            catch (Exception ex)
-            {
-                Log.Error($"Error: {ex.Message}");
-                await Task.Delay(30000);
             }
         }
     }
