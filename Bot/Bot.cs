@@ -34,6 +34,10 @@ namespace PRMainBot
             {
                 await maintenance.Execute(command);
             }
+            if (commandName == "verify")
+            {
+                await verification.Execute(command);
+            }
 
             if (commandName == "stop")
             {
