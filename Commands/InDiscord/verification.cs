@@ -39,11 +39,14 @@ namespace PRMainBot.Commands.InDiscord
             {
                 await command.RespondAsync("Du hast eine falsche SteamID angegeben. Bitte überprüfe nochmal deine SteamID, oder Frag Skorp.");
             }
+            else if (Link.status == 2)
+            {
+                await command.RespondAsync("Du bist bereits auf dem SL Server verifiziert. Sollte das flasch sein, wende dich bitte an Skorp!");
+            }
             else if (Link.status == -1)
             {
                 await command.RespondAsync("Es gabe einen Fehler beim Ausführen, bitte meldet das Skorp.");
             }
-            
         }
     }
 }

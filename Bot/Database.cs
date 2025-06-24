@@ -131,6 +131,8 @@ namespace PRMainBot.Database
                 await _collection.ReplaceOneAsync(filter, player);
                 return (0, player.VerificationToken); // Status 0: Success
             }
+            else if (!string.IsNullOrEmpty(player.DiscordId))
+                return (2, null); // Error 2: Player already verified
 
             return (-1, null); // Error -1: General Error
         }
