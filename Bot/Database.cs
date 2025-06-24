@@ -22,7 +22,7 @@ namespace PRMainBot.Database
             [BsonId]
             public string Id { get; set; }
             public string DiscordId { get; set; } = null;
-            public string VerifyingID { get; set; }
+            public bool Verified { get; set; } = false;
             public string VerificationToken { get; set; }
             public string Nickname { get; set; }
             public string CustomNick { get; set; }
@@ -122,16 +122,16 @@ namespace PRMainBot.Database
             if (player == null)
                 return (1, null); // Error 1: "Not in DB" (prob. wrong SteamID)
 
-            if (string.IsNullOrEmpty(player.VerificationToken))
+            if (!player.Verified)
             {
-                player.VerifyingID = user.Id.ToString() + "@discord";
+                player.DiscordId = user.Id.ToString() + "@discord";
                 player.VerificationToken = GenerateVerificationToken();
 
                 var filter = Builders<PlayerData>.Filter.Eq(p => p.Id, player.Id);
                 await _collection.ReplaceOneAsync(filter, player);
                 return (0, player.VerificationToken); // Status 0: Success
             }
-            else if (!string.IsNullOrEmpty(player.DiscordId))
+            else if (player.Verified)
                 return (2, null); // Error 2: Player already verified
 
             return (-1, null); // Error -1: General Error
