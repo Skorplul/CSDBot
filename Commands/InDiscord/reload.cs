@@ -59,11 +59,11 @@ public static class reload
                 case "maintenace":
                     globalCommand.WithDefaultMemberPermissions(GuildPermission.ManageEvents);
                     break;
-                case "verify":
-                    globalCommand.AddOption("steamid", ApplicationCommandOptionType.String, "Deine SteamID64 (Website -> https://steamid.xyz)", isRequired: true);
+                case "stats":
                     globalCommand.WithDefaultMemberPermissions(GuildPermission.AddReactions);
                     break;
-                case "stats":
+                case "verify":
+                    globalCommand.AddOption("steamid", ApplicationCommandOptionType.String, "Deine SteamID64 (Website -> https://steamid.xyz)", isRequired: true);
                     globalCommand.WithDefaultMemberPermissions(GuildPermission.AddReactions);
                     break;
                 default:
