@@ -58,6 +58,8 @@ namespace PRMainBot.Commands.InDiscord
                 .WithAuthor($"@{command.User.GlobalName}")
                 .WithFields(_killsField, _deathsField, _currentXpField, _levelField, _playtimeField, _reaconsField)
                 .WithFooter(_footer);
+
+            await command.RespondAsync(embed: _embed.Build());
         }
     }
 }

@@ -13,9 +13,6 @@ public static class reload
         if (command != null)
             await command.RespondAsync("Reloading all commands now.", ephemeral: true);
 
-        // Let's do our global command
-        var globalCommand = new SlashCommandBuilder();
-
         int indexCount = 0;
 
         List<string> commName = new List<string>()
@@ -41,7 +38,8 @@ public static class reload
 
         //need to redo for class itteration!!
         foreach (string comm in commName)
-        { 
+        {
+            var globalCommand = new SlashCommandBuilder();
             globalCommand.WithName(comm);
             globalCommand.WithDescription(commDesc[indexCount]);
             
