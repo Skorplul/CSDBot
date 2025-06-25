@@ -209,7 +209,7 @@ namespace PRMainBot.Database
 
             if (!player.Verified)
             {
-                if (!string.IsNullOrEmpty(player.VerificationToken) && !string.IsNullOrEmpty(player.DiscordId))
+                if (!string.IsNullOrEmpty(player.VerificationToken) && string.IsNullOrEmpty(player.DiscordId))
                     return (3, null); // Error 3: User already started verification
 
                 player.DiscordId = user.Id.ToString() + "@discord";
