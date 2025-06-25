@@ -34,14 +34,22 @@ namespace PRMainBot.Commands.InDiscord
             {
                 await command.User.SendMessageAsync($"Dein verifikations Token Lautet: {Link.message}\nGib diesen Token mit dem command `.verify <token>` in der Ö-Konsole auf dem Project Reload Server ein.");
                 await command.RespondAsync("Dir wurde dein Token via DM geschickt, gib diesen nicht weiter!");
+                return;
             }
             else if (Link.status == 1)
             {
                 await command.RespondAsync("Du hast eine falsche SteamID angegeben. Bitte überprüfe nochmal deine SteamID, oder Frag Skorp.");
+                return;
             }
             else if (Link.status == 2)
             {
                 await command.RespondAsync("Du bist bereits auf dem SL Server verifiziert. Sollte das flasch sein, wende dich bitte an Skorp!");
+                return;
+            }
+            else if (Link.status == 3)
+            {
+                await command.RespondAsync("Du hast bereits angefangen dich zu verifizieren, bitte befolge die anweisungen in deinen Direkt Nachrichten.");
+                return;
             }
             else if (Link.status == -1)
             {

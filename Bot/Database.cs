@@ -4,8 +4,10 @@ using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Driver;
 using PRMainBot.API;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Sockets;
 using System.Numerics;
 using System.Security.Cryptography;
 using System.Text;
@@ -16,6 +18,17 @@ namespace PRMainBot.Database
 {
     internal static class API
     {
+        private static class PlayerDataCache
+        {
+            internal static readonly ConcurrentDictionary<string, PlayerData> Data = new();
+
+            public static PlayerData Get(string id)
+                => Data.TryGetValue(id, out var result) ? result : null;
+
+            public static void Set(string id, PlayerData playerData)
+                => Data[id] = playerData;
+        }
+
         // Player data model
         public class PlayerData
         {
@@ -50,6 +63,8 @@ namespace PRMainBot.Database
 
         private static IMongoCollection<PlayerData>? _collection;
         internal static bool DbLoaded = false;
+        internal static bool VerifyUpdateCancled = false;
+        private static bool VerifyUpdateRunning = false;
 
         internal static void InitDB()
         {
@@ -67,6 +82,31 @@ namespace PRMainBot.Database
         {
             _collection = null;
             DbLoaded = false;
+        }
+
+        /// <summary>
+        /// Loads all MongoDB documents into <see cref="PlayerDataCache.Data">.
+        /// </summary>
+        private static void LoadAllDataFromDatabase()
+        {
+            Task.Run(async () =>
+            {
+                var allPlayers = await _collection.Find(_ => true).ToListAsync();
+                foreach (var player in allPlayers)
+                {
+                    try
+                    {
+                        PlayerDataCache.Data[player.Id] = player;
+                    }
+                    catch (Exception ex)
+                    {
+                        Log.Error("Player with wrong atributes, skipping...");
+                        continue;
+                    }
+                }
+
+                Log.Debug($"Loaded {PlayerDataCache.Data.Count} player data entries into memory.");
+            }).GetAwaiter().GetResult(); // Block here if you must to ensure data is ready.
         }
 
         /// <summary>
@@ -94,18 +134,58 @@ namespace PRMainBot.Database
 
 
         /// <summary>
-        /// For constant Rank updates. (only possible with OAuth2 flow for connections)
+        /// Seting the verified Role for every verified user.
         /// </summary>
         /// <param name="guild">The <see cref="SocketGuild"/> to go through.</param>
-        /// <returns>The Task for this opeeration</returns>w
-        internal static async Task RankUpdate(SocketGuild guild)
+        /// <returns>The Task for this operation</returns>w
+        internal static async Task VerifiedUpdate(SocketGuild guild)
         {
-            await guild.DownloadUsersAsync();
+            if (VerifyUpdateRunning)
+                return;
 
-            foreach (var user in guild.Users)
+            VerifyUpdateRunning = true;
+
+            while (!VerifyUpdateCancled)
             {
-                
+                LoadAllDataFromDatabase();
+                var datacache = PlayerDataCache.Data;
+                foreach (var user in datacache.Values)
+                {
+                    if (user.Verified != true)
+                        continue;
+
+                    if (string.IsNullOrWhiteSpace(user.DiscordId))
+                        continue;
+
+                    string idDigits = new string(user.DiscordId.Where(char.IsDigit).ToArray());
+
+                    if (!ulong.TryParse(idDigits, out ulong dcid))
+                    {
+                        Log.Info("Skipping user (couldn't parse Discord ID)");
+                        continue;
+                    }
+
+                    var dcuser = await WebSocket._client.Rest.GetGuildUserAsync(guild.Id, dcid);
+
+                    var veriRole = guild.Roles.FirstOrDefault(r => r.Id == 1386702482868011180);
+                    if (veriRole == null)
+                    {
+                        Log.Warn("Verification role not found.");
+                        break; // Stop loop; no point continuing if role doesn't exist
+                    }
+
+                    if (dcuser.RoleIds.Contains(veriRole.Id))
+                        continue;
+
+                    Log.Info($"Adding Role to {dcuser.Username}");
+                    await dcuser.AddRoleAsync(veriRole);
+                }
+                datacache = null;
+                PlayerDataCache.Data.Clear();
+
+                await Task.Delay(30000);
             }
+            VerifyUpdateRunning = false;
         }
 
         /// <summary>
@@ -124,6 +204,9 @@ namespace PRMainBot.Database
 
             if (!player.Verified)
             {
+                if (!string.IsNullOrEmpty(player.VerificationToken) && !string.IsNullOrEmpty(player.DiscordId))
+                    return (3, null); // Error 3: User already started verification
+
                 player.DiscordId = user.Id.ToString() + "@discord";
                 player.VerificationToken = GenerateVerificationToken();
 

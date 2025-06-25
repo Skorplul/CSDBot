@@ -9,6 +9,7 @@ public static class Exit
         Log.Debug("Shutting down...");
         // Closing DB
         Database.API.CloseDB();
+        Database.API.VerifyUpdateCancled = true;
 
         // Shut down the Discord client gracefully.
         WebSocket._client?.LogoutAsync().GetAwaiter().GetResult();

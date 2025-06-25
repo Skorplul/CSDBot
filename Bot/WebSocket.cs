@@ -9,7 +9,7 @@ namespace PRMainBot
 {
     public static class WebSocket
     {
-        public static DiscordSocketClient? _client;
+        internal static DiscordSocketClient? _client;
 
         public static async Task Main()
         {
@@ -30,6 +30,7 @@ namespace PRMainBot
 
                 // Load DB
                 Database.API.InitDB();
+                _ = Database.API.VerifiedUpdate(_client.GetGuild(1329868400423338044));
                 
                 // Reggister commands
                 reload.Execute(null);
