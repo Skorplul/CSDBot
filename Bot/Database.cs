@@ -84,6 +84,11 @@ namespace PRMainBot.Database
             DbLoaded = false;
         }
 
+        public static async Task<PlayerData> GetUserData(this SocketUser user)
+        {
+            return await _collection.Find(u => u.DiscordId == user.Id.ToString() + "@discord").FirstOrDefaultAsync();
+        }
+
         /// <summary>
         /// Loads all MongoDB documents into <see cref="PlayerDataCache.Data">.
         /// </summary>

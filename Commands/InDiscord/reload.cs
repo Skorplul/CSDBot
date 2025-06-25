@@ -25,6 +25,7 @@ public static class reload
             "reload",
             "maintenace",
             "verify",
+            "stats"
         };
 
         List<string> commDesc = new List<string>()
@@ -34,6 +35,7 @@ public static class reload
             "reload commands?",
             "Setzt den Serverstatus auf Wartungsarbeiten.",
             "Verbinde deinen Discord Account mit deiner SteamID64",
+            "Lass dir deine Stats aus dem Spiel anzeigen.",
         };
 
 
@@ -59,6 +61,9 @@ public static class reload
                     break;
                 case "verify":
                     globalCommand.AddOption("steamid", ApplicationCommandOptionType.String, "Deine SteamID64 (Website -> https://steamid.xyz)", isRequired: true);
+                    globalCommand.WithDefaultMemberPermissions(GuildPermission.AddReactions);
+                    break;
+                case "stats":
                     globalCommand.WithDefaultMemberPermissions(GuildPermission.AddReactions);
                     break;
                 default:
