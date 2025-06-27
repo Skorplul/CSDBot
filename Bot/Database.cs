@@ -1,17 +1,12 @@
-﻿using Discord.WebSocket;
+﻿using Discord;
+using Discord.WebSocket;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Driver;
 using PRMainBot.API;
-using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Sockets;
-using System.Numerics;
 using System.Security.Cryptography;
 using System.Text;
-using System.Threading.Tasks;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace PRMainBot.Database
@@ -63,8 +58,14 @@ namespace PRMainBot.Database
 
         private static IMongoCollection<PlayerData>? _collection;
         internal static bool DbLoaded = false;
-        internal static bool VerifyUpdateCancled = false;
+
+        /// Tokens for <see cref="VerifiedUpdate(SocketGuild)">
+        private static bool VerifyUpdateCancled = false;
         private static bool VerifyUpdateRunning = false;
+
+        /// Tokens for <see cref="UpdateRanks(SocketGuild)">
+        private static bool UpdateRanksCancled = false;
+        private static bool UpdateRanksRunning = false;
 
         internal static void InitDB()
         {
@@ -80,6 +81,8 @@ namespace PRMainBot.Database
 
         internal static void CloseDB()
         {
+            VerifyUpdateCancled = true;
+            UpdateRanksCancled = true;
             _collection = null;
             DbLoaded = false;
         }
@@ -142,7 +145,7 @@ namespace PRMainBot.Database
         /// Seting the verified Role for every verified user.
         /// </summary>
         /// <param name="guild">The <see cref="SocketGuild"/> to go through.</param>
-        /// <returns>The Task for this operation</returns>w
+        /// <returns>The Task for this operation</returns>
         internal static async Task VerifiedUpdate(SocketGuild guild)
         {
             if (VerifyUpdateRunning)
@@ -154,9 +157,11 @@ namespace PRMainBot.Database
             {
                 LoadAllDataFromDatabase();
                 var datacache = PlayerDataCache.Data;
+                PlayerDataCache.Data.Clear();
+
                 foreach (var user in datacache.Values)
                 {
-                    if (user.Verified != true)
+                    if (!user.Verified)
                         continue;
 
                     if (string.IsNullOrWhiteSpace(user.DiscordId))
@@ -172,7 +177,7 @@ namespace PRMainBot.Database
 
                     var dcuser = await WebSocket._client.Rest.GetGuildUserAsync(guild.Id, dcid);
 
-                    var veriRole = guild.Roles.FirstOrDefault(r => r.Id == 1386702482868011180);
+                    var veriRole = guild.Roles.FirstOrDefault(r => r.Id == (ulong)Enums.Roles.Verified);
                     if (veriRole == null)
                     {
                         Log.Warn("Verification role not found.");
@@ -186,11 +191,66 @@ namespace PRMainBot.Database
                     await dcuser.AddRoleAsync(veriRole);
                 }
                 datacache = null;
-                PlayerDataCache.Data.Clear();
 
                 await Task.Delay(30000);
             }
             VerifyUpdateRunning = false;
+        }
+
+        /// <summary>
+        /// Update Roles for SCP:SL server.
+        /// </summary>
+        /// <param name="guild">The <see cref="SocketGuild"/> to go through.</param>
+        /// <returns>The Task for this operation</returns>
+        internal static async Task UpdateRanks(SocketGuild guild)
+        {
+            if (UpdateRanksRunning)
+                return;
+            UpdateRanksRunning = true;
+
+            while (!UpdateRanksCancled)
+            {
+                LoadAllDataFromDatabase();
+                var datacache = PlayerDataCache.Data;
+                PlayerDataCache.Data.Clear();
+
+                foreach (PlayerData user in datacache.Values)
+                {
+                    if (!user.Verified)
+                        continue;
+
+                    string idDigits = new string(user.DiscordId.Where(char.IsDigit).ToArray());
+
+                    if (!ulong.TryParse(idDigits, out ulong dcid))
+                    {
+                        Log.Info("Skipping user (couldn't parse Discord ID)");
+                        continue;
+                    }
+
+                    var dcuser = await WebSocket._client.Rest.GetGuildUserAsync(guild.Id, dcid);
+
+                    if (dcuser.RoleIds.Any(id => Enums.RoleLookup.ContainsKey(id)))
+                    {
+                        var matchedRoles = dcuser.RoleIds
+                            .Where(id => Enums.RoleLookup.ContainsKey(id))
+                            .Select(id => Enums.RoleLookup[id])
+                            .ToList();
+
+                        if (matchedRoles.FirstOrDefault() == Enums.Roles.Verified)
+                            matchedRoles.Remove(matchedRoles.FirstOrDefault());
+
+                        user.Rank = matchedRoles.FirstOrDefault().ToRoleString() ?? "Keine Rolle";
+
+                        var filter = Builders<PlayerData>.Filter.Eq(p => p.Id, user.Id);
+
+                        var update = Builders<PlayerData>.Update
+                            .Set(p => p.Rank, user.Rank);
+
+                        await _collection.UpdateOneAsync(filter, update, new UpdateOptions { IsUpsert = true });
+                    }
+                }
+
+            }
         }
 
         /// <summary>
